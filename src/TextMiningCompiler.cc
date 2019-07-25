@@ -6,7 +6,7 @@ void Node::add_children(char c, Node n)
     this->children.insert({c, &n});
 }
 
-void add_word(std::string word, int freq)
+void add_word(std::string word, int &freq)
 {
 
 }
@@ -25,10 +25,9 @@ Node process_file(std::string filename)
                 std::istream_iterator<std::string>{}
         };
 
-        for (auto w : words)
-        {
-            std::cout << e << "$" << std::endl;
-        }
+        auto i = std::stoi(words.at(1));
+        add_word(words.at(0), i);
+
     }
 
     return n;
