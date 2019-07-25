@@ -11,6 +11,8 @@
 #include <iostream>
 #include <sstream>
 #include <iterator>
+#include <map>
+
 
 class Node
 {
@@ -18,9 +20,10 @@ public:
     Node(unsigned int freq)
         : freq_(freq)
     {}
-    void add_children(char c, Node n);
+    void add_children(char c, Node &n);
+    void add_word(std::string word, int &freq);
 
 private:
     int freq_;
-    std::unordered_map<char, Node*> children;
+    std::map<char, Node*> children;
 };
