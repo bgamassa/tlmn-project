@@ -6,8 +6,25 @@ void Node::add_children(char c, Node &n)
     this->children.insert({c, &n});
 }
 
+int Node::find(char c)
+{
+    for (auto &e: this->children)
+    {
+        std::cout << e.first << std::endl;
+
+        if (c == e.first)
+            return 1;
+    }
+
+    return 0;
+}
+
 void Node::add_word(std::string word, int &freq)
 {
+    std::cout << this << std::endl;
+    std::cout << this->freq_<< std::endl;
+    if (this == NULL)
+        std::cout << "null" << this->freq_ << std::endl;
     auto cur = this;
 
     for (std::string::size_type i = 0; i < word.size(); ++i)
@@ -17,13 +34,14 @@ void Node::add_word(std::string word, int &freq)
         std::cout << "freq " << cur->freq_ << std::endl;*/
 
         char c = word[i];
-        if (cur->children.empty() || (cur->children.find(c) == cur->children.end()))
+        if (!this->find(c))
         {
             // case when the character not in trie
             // we create a new node and add it to the current node
             // then if if is the final word, we indicate it by adding the frequency
 
-            auto n = Node(0);
+            auto m = std::map<char, Node*>();
+            auto n = Node(0, m);
             cur->add_children(word[i], n);
 
             //std::cout << cur->children.size() << std::endl;
@@ -62,7 +80,8 @@ void Node::add_word(std::string word, int &freq)
 Node process_file(std::string filename)
 {
     std::ifstream fstream(filename);
-    auto root = Node(0);
+    auto m = std::map<char, Node*>();
+    Node root(0, m);
     std::string line;
 
     while (getline(fstream, line))

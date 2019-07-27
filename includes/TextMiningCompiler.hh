@@ -17,11 +17,12 @@
 class Node
 {
 public:
-    Node(unsigned int freq)
-        : freq_(freq)
+    Node(unsigned int freq, std::map<char, Node*> childre)
+        : freq_(freq), children(childre)
     {}
     void add_children(char c, Node &n);
     void add_word(std::string word, int &freq);
+    int find(char c);
 
 private:
     int freq_;
