@@ -12,19 +12,21 @@
 #include <sstream>
 #include <iterator>
 #include <map>
+#include <vector>
+#include <algorithm>
 
 
 class Node
 {
 public:
-    Node(unsigned int freq, std::map<char, Node*> childre)
-        : freq_(freq), children(childre)
+    Node(int freq)
+        : freq_(freq)
     {}
+    int freq_;
+    std::vector<char> characters;
+    std::map<char, Node*> children;
+
     void add_children(char c, Node &n);
     void add_word(std::string word, int &freq);
-    int find(char c);
-
-private:
-    int freq_;
-    std::map<char, Node*> children;
+    int find(char &c);
 };

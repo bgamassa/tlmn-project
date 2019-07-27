@@ -1,18 +1,64 @@
 #include <TextMiningCompiler.hh>
 #include <fstream>
 
+struct Trie
+{
+    bool endOfWord;
+    int freq;
+    std::unordered_map<char, Trie*> children;
+};
+
+Trie* init_trie()
+{
+    Trie* node = new Trie;
+    node->endOfWord  = false;
+    node->freq = 0;
+    return node;
+}
+
+void insert(Trie*& root, std::string word, int &freq)
+{
+    if (root == nullptr)
+        root = init_trie();
+
+    Trie* current = root;
+
+    for(std::string::size_type i = 0; i < word.size(); ++i) {
+
+        char c = word[i];
+
+        if (current->children.find(c) == current->children.end())
+            current->children[c] = init_trie();
+
+        current = current->children[c];
+    }
+
+    current->endOfWord = true;
+    current->freq = freq;
+}
+
+bool hasChildren(Trie const* current)
+{
+    for (auto it : current->children)
+        if (it.second != nullptr)
+            return true;
+
+    return false;
+}
+
+
 void Node::add_children(char c, Node &n)
 {
     this->children.insert({c, &n});
+    this->characters.push_back(c);
 }
 
-int Node::find(char c)
+int Node::find(char &c)
 {
-    for (auto &e: this->children)
+    for (auto i = 0; i < this->characters.size(); ++i)
     {
-        std::cout << e.first << std::endl;
-
-        if (c == e.first)
+        std::cout << this->characters[i] << std::endl;
+        if (this->characters[i] == c)
             return 1;
     }
 
@@ -21,67 +67,40 @@ int Node::find(char c)
 
 void Node::add_word(std::string word, int &freq)
 {
-    std::cout << this << std::endl;
-    std::cout << this->freq_<< std::endl;
-    if (this == NULL)
-        std::cout << "null" << this->freq_ << std::endl;
-    auto cur = this;
+    if (word == "")
+        return;
 
-    for (std::string::size_type i = 0; i < word.size(); ++i)
+    char c = word[0];
+    if (this->find(c) == 0)
     {
-        /*std::cout << word[i] << std::endl;
-        std::cout << word << "$" << std::endl;
-        std::cout << "freq " << cur->freq_ << std::endl;*/
+        // case when the character not in trie
+        // we create a new node and add it to the current node
+        // then if if is the final word, we indicate it by adding the frequency
 
-        char c = word[i];
-        if (!this->find(c))
-        {
-            // case when the character not in trie
-            // we create a new node and add it to the current node
-            // then if if is the final word, we indicate it by adding the frequency
+        Node n(0);
+        this->add_children(word[0], n);
 
-            auto m = std::map<char, Node*>();
-            auto n = Node(0, m);
-            cur->add_children(word[i], n);
 
-            //std::cout << cur->children.size() << std::endl;
+        if (word.length() == 1)
+            this->freq_ = freq;
 
-            if (i + 1 == word.size())
-                cur->freq_ = freq;
+        this->children[c]->add_word(word.substr(1, std::string::npos), freq);
+    }
 
-            cur = &n;
+    else
+    {
+        if (word.length() == 1)
+            this->freq_ = freq;
 
-            /*if (i + 1 == word.size())
-                cur->freq_ = freq;
-
-            cur = cur->children[word[i]];*/
-        }
-
-        else
-        {
-            if (i + 1 == word.size())
-                cur->freq_ = freq;
-
-            cur = cur->children[word[i]];
-
-            /*auto n = Node(0);
-            cur->add_children(word[i], n);
-
-            std::cout << cur->children.size() << std::endl;
-
-            if (i + 1 == word.size())
-                cur->freq_ = freq;
-
-            cur = &n;*/
-        }
+        std::cout << "hi there" << std::endl;
+        this->children[c]->add_word(word.substr(1, std::string::npos), freq);
     }
 }
 
-Node process_file(std::string filename)
+Trie* process_file(std::string filename)
 {
     std::ifstream fstream(filename);
-    auto m = std::map<char, Node*>();
-    Node root(0, m);
+    Trie* root = nullptr;
     std::string line;
 
     while (getline(fstream, line))
@@ -93,8 +112,7 @@ Node process_file(std::string filename)
         };
 
         auto i = std::stoi(words[1]);
-        std::cout << words[0] << std::endl;
-        root.add_word(words[0], i);
+        insert(root, words[0], i);
     }
 
     return root;
