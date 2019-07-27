@@ -1,11 +1,30 @@
 #include <TextMiningCompiler.hh>
 #include <fstream>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/serialization/unordered_map.hpp>
 
-struct Trie
+class Trie
 {
+private:
+    friend class boost::serialization::access;
+    template <class Archive>
+    void serialize(Archive & ar, const unsigned int version)
+    {
+        ar & endOfWord;
+        ar & freq;
+        ar & children;
+    }
+public:
     bool endOfWord;
     int freq;
     std::unordered_map<char, Trie*> children;
+
+    Trie()
+    {
+        endOfWord = false;
+        freq = 0;
+    }
 };
 
 Trie* init_trie()
@@ -19,7 +38,7 @@ Trie* init_trie()
 void insert(Trie*& root, std::string word, int &freq)
 {
     if (root == nullptr)
-        root = init_trie();
+        root = new Trie();
 
     Trie* current = root;
 
@@ -28,7 +47,7 @@ void insert(Trie*& root, std::string word, int &freq)
         char c = word[i];
 
         if (current->children.find(c) == current->children.end())
-            current->children[c] = init_trie();
+            current->children[c] = new Trie();
 
         current = current->children[c];
     }
@@ -44,6 +63,16 @@ bool hasChildren(Trie const* current)
             return true;
 
     return false;
+}
+
+void serialize(Trie*& root, std::string filename)
+{
+   std::ofstream ofs(filename);
+
+    {
+        boost::archive::text_oarchive oa (ofs);
+        oa << root;
+    }
 }
 
 
@@ -112,8 +141,11 @@ Trie* process_file(std::string filename)
         };
 
         auto i = std::stoi(words[1]);
+        //std::cout << words[0] << std::endl;
         insert(root, words[0], i);
     }
+
+    serialize(root, "dict.bin");
 
     return root;
 }
