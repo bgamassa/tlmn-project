@@ -14,19 +14,29 @@
 #include <map>
 #include <vector>
 #include <algorithm>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/serialization/unordered_map.hpp>
 
-
-class Node
+class Trie
 {
+private:
+    friend class boost::serialization::access;
+    template <class Archive>
+    void serialize(Archive & ar, const unsigned int version)
+    {
+        ar & endOfWord;
+        ar & freq;
+        ar & children;
+    }
 public:
-    Node(int freq)
-        : freq_(freq)
-    {}
-    int freq_;
-    std::vector<char> characters;
-    std::map<char, Node*> children;
+    bool endOfWord;
+    int freq;
+    std::unordered_map<char, Trie*> children;
 
-    void add_children(char c, Node &n);
-    void add_word(std::string word, int &freq);
-    int find(char &c);
+    Trie()
+    {
+        endOfWord = false;
+        freq = 0;
+    }
 };

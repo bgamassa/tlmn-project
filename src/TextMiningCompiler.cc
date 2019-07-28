@@ -1,31 +1,4 @@
 #include <TextMiningCompiler.hh>
-#include <fstream>
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
-#include <boost/serialization/unordered_map.hpp>
-
-class Trie
-{
-private:
-    friend class boost::serialization::access;
-    template <class Archive>
-    void serialize(Archive & ar, const unsigned int version)
-    {
-        ar & endOfWord;
-        ar & freq;
-        ar & children;
-    }
-public:
-    bool endOfWord;
-    int freq;
-    std::unordered_map<char, Trie*> children;
-
-    Trie()
-    {
-        endOfWord = false;
-        freq = 0;
-    }
-};
 
 Trie* init_trie()
 {
@@ -35,7 +8,7 @@ Trie* init_trie()
     return node;
 }
 
-void insert(Trie*& root, std::string word, int &freq)
+void insert(Trie*& root, std::string& word, int &freq)
 {
     if (root == nullptr)
         root = new Trie();
@@ -65,7 +38,7 @@ bool hasChildren(Trie const* current)
     return false;
 }
 
-void serialize(Trie*& root, std::string filename)
+void serialize(Trie*& root, std::string& filename)
 {
    std::ofstream ofs(filename);
 
@@ -75,7 +48,7 @@ void serialize(Trie*& root, std::string filename)
     }
 }
 
-Trie* deserialize(std::string filename)
+Trie* deserialize(std::string& filename)
 {
     Trie *t;
     std::ifstream ifs(filename);
@@ -85,56 +58,6 @@ Trie* deserialize(std::string filename)
     return t;
 }
 
-
-void Node::add_children(char c, Node &n)
-{
-    this->children.insert({c, &n});
-    this->characters.push_back(c);
-}
-
-int Node::find(char &c)
-{
-    for (auto i = 0; i < this->characters.size(); ++i)
-    {
-        std::cout << this->characters[i] << std::endl;
-        if (this->characters[i] == c)
-            return 1;
-    }
-
-    return 0;
-}
-
-void Node::add_word(std::string word, int &freq)
-{
-    if (word == "")
-        return;
-
-    char c = word[0];
-    if (this->find(c) == 0)
-    {
-        // case when the character not in trie
-        // we create a new node and add it to the current node
-        // then if if is the final word, we indicate it by adding the frequency
-
-        Node n(0);
-        this->add_children(word[0], n);
-
-
-        if (word.length() == 1)
-            this->freq_ = freq;
-
-        this->children[c]->add_word(word.substr(1, std::string::npos), freq);
-    }
-
-    else
-    {
-        if (word.length() == 1)
-            this->freq_ = freq;
-
-        std::cout << "hi there" << std::endl;
-        this->children[c]->add_word(word.substr(1, std::string::npos), freq);
-    }
-}
 
 Trie* process_file(std::string filename)
 {
@@ -159,7 +82,7 @@ Trie* process_file(std::string filename)
     return root;
 }
 
-int read_file(std::string filename)
+int read_file(std::string filename, std::string dest)
 {
     std::ifstream fstream(filename);
 
@@ -167,12 +90,12 @@ int read_file(std::string filename)
         return 0;
 
     auto n = process_file(filename);
-    serialize(n, "dict.bin");
+    serialize(n, dest);
     //auto t = deserialize("dict.bin");
     return 1;
 }
 
 int main(int argc, char *argv[])
 {
-  return read_file(argv[1]);
+  return read_file(argv[1], argv[2]);
 }
