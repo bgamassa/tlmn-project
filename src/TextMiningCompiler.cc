@@ -75,6 +75,16 @@ void serialize(Trie*& root, std::string filename)
     }
 }
 
+Trie* deserialize(std::string filename)
+{
+    Trie *t;
+    std::ifstream ifs(filename);
+    boost::archive::text_iarchive ia (ifs);
+    ia >> t;
+
+    return t;
+}
+
 
 void Node::add_children(char c, Node &n)
 {
@@ -145,7 +155,6 @@ Trie* process_file(std::string filename)
         insert(root, words[0], i);
     }
 
-    serialize(root, "dict.bin");
 
     return root;
 }
@@ -158,6 +167,8 @@ int read_file(std::string filename)
         return 0;
 
     auto n = process_file(filename);
+    serialize(n, "dict.bin");
+    //auto t = deserialize("dict.bin");
     return 1;
 }
 
