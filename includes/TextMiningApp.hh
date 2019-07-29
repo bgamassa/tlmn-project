@@ -5,3 +5,5 @@
 #pragma once
 
 #include <TextMiningCompiler.hh>
+#include <stdio.h>
+#include <unistd.h>
