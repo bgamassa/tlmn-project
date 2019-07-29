@@ -171,7 +171,7 @@ int read_file(std::string filename, std::string dest)
         std::ifstream fin(*i);
         std::string line;
         while( std::getline( fin, line ) ) fout << line << '\n';
-        fout << "===" << '\n';
+        fout << "=" << '\n';
         std::cout << "deleting " << *i << std::endl;
         std::remove(i->c_str());
     }
