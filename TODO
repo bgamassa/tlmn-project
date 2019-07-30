@@ -1,8 +1,10 @@
 [ ] Memory leaks
-[ ] levensein function
+[X] levensein function
 [X] create class to store pair and function to sort them
+[ ] speed
 [ ] add comments
 [ ] clean code
 [ ] fill questions
 [ ] write README
 [X] separate function for Trie
+[X] test suite

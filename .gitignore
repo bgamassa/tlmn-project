@@ -2,3 +2,5 @@ build/*
 .idea/*
 cmake-build-debug/*
 .vscode/
+tests/my_output.txt
+tests/ref.txt
