@@ -20,4 +20,6 @@ add_custom_target(doc
         COMMAND doxygen ${doxyfile_in}
         WORKING_DIRECTORY ../doc)
 
-
+add_custom_target(check
+        COMMAND ./test.sh
+        WORKING_DIRECTORY ../tests)

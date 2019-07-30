@@ -1,7 +1,36 @@
 #include <TextMiningApp.hh>
 
+/*
+ ** @file TextMiningApp.cc
+ ** @brief File containing functions to search for words according to a give distance
+ ** @authors Binta Gamassa
+ ** @version 1.0
+ ** @date 30/07/19
+ */
+
 typedef std::tuple<std::string &, int &, int &> elt;
 auto res = std::vector<element>();
+
+/** My function doing something...
+    @param filename first parameter
+    @return value return value
+*/
+
+element init_element(std::string word, int freq, int distance)
+{
+    element elt;
+
+    elt.word = word;
+    elt.freq = freq;
+    elt.distance = distance;
+
+    return elt;
+}
+
+/** My function doing something...
+    @param filename first parameter
+    @return value return value
+*/
 
 bool elt_cmp(const element &lhs, const element &rhs)
 {
@@ -19,6 +48,11 @@ bool elt_cmp(const element &lhs, const element &rhs)
         return true;
     return false;
 }
+
+/** My function doing something...
+    @param filename first parameter
+    @return value return value
+*/
 
 int damerau_levenshtein(std::string &w1, std::string &w2)
 {
@@ -51,16 +85,10 @@ int damerau_levenshtein(std::string &w1, std::string &w2)
     return d[w1.size()][w2.size()];
 }
 
-element init_element(std::string word, int freq, int distance)
-{
-    element elt;
-
-    elt.word = word;
-    elt.freq = freq;
-    elt.distance = distance;
-
-    return elt;
-}
+/** My function doing something...
+    @param filename first parameter
+    @return value return value
+*/
 
 void print_res()
 {
@@ -77,6 +105,11 @@ void print_res()
 
     std::cout << ']' << std::endl;
 }
+
+/** My function doing something...
+    @param filename first parameter
+    @return value return value
+*/
 
 void search(Trie *&t, std::string &word, int dist)
 {
@@ -99,6 +132,11 @@ void search(Trie *&t, std::string &word, int dist)
             search(elt.second, word, dist);
     }
 }
+
+/** My function doing something...
+    @param filename first parameter
+    @return value return value
+*/
 
 void load_and_search(char *dict, std::string word, int dist)
 {
@@ -129,6 +167,11 @@ void load_and_search(char *dict, std::string word, int dist)
     print_res();
     res.clear();
 }
+
+/** My function doing something...
+    @param filename first parameter
+    @return value return value
+*/
 
 int handle_cmd(char *dict)
 {
