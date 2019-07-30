@@ -1,6 +1,6 @@
 [ ] Memory leaks
 [ ] levensein function
-[ ] create class to store pair and function to sort them
+[X] create class to store pair and function to sort them
 [ ] add comments
 [ ] clean code
 [ ] fill questions
