@@ -1,10 +1,8 @@
-[ ] TextMiningCompiler
-    [ ] Handle file
-        -> doesn't do anything if file doesn't exist or is corrupted
-    [ ] Read line by line and trim white spaces to get words frequency
-    [ ] Patricia Tree
-    [ ] Save dict to file
-        -> create file if it doesn't exist
-    [ ] create method to delete trie
-    [ ] 
-[ ] TextMiningApp
+[ ] Memory leaks
+[ ] levensein function
+[ ] create class to store pair and function to sort them
+[ ] add comments
+[ ] clean code
+[ ] fill questions
+[ ] write README
+[ ] separate function for Trie

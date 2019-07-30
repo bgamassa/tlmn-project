@@ -1,6 +1,39 @@
 #include <TextMiningApp.hh>
 
-Trie* deserialize(std::string filename)
+int damerau_levenshtein(std::string& w1, std::string& w2)
+{
+    int sub_or_exact = 0;
+
+    int d [w1.size() + 1][w2.size() + 1] = {0};
+
+    for (auto i = 0; i <= w1.size(); ++i)
+        d[i][0] = i;
+    for (auto j = 0; j <= w2.size(); ++j)
+        d[0][j] = j;
+
+    auto diff = 0;
+
+    if (w1[0] != w2[0])
+        diff = 1;
+
+    for (auto i = 1; i <= w1.size(); ++i)
+        for (auto j = 1; j <= w2.size(); ++j)
+        {
+            if (w1[i] == w2[j])
+                sub_or_exact = 0;
+            else
+                sub_or_exact = 1;
+
+            d[i][j] = std::min(d[i - 1][j] + 1, std::min(d[i][j - 1] + 1, d[i - 1][j- 1] + sub_or_exact));
+
+            if (i > 1 && j > 1 && w1[i] == w2[j - 1] && w1[i - 1] == w2[j])
+                d[i][j] = std::min(d[i][j], d[i - 2][j - 2] + sub_or_exact);
+        }
+
+    return d[w1.size()][w2.size()] + diff;
+}
+
+Trie* load(std::string filename)
 {
     Trie *t;
     std::ifstream ifs(filename);
@@ -10,87 +43,124 @@ Trie* deserialize(std::string filename)
     return t;
 }
 
-void print(std::string& word, int& distance, int& freq)
+void print(std::string word, int distance, int freq)
 {
     std::cout << '{' << "\"word\":" << word << ",\"freq\":" << freq << ",\"distance\":" << distance << '}';
 }
 
-void searchRecursive(Trie*& t, char c, std::string& word, std::vector<int>& row, int& dist)
+bool hasChildren(Trie const* current)
 {
-    auto columns = word.size() + 1;
-    std::vector<int> currentRow = {row[0] + 1};
+    for (auto it : current->children)
+        if (it.second != nullptr)
+            return true;
 
-    for (auto i = 1; i < columns; ++i)
+    return false;
+}
+
+
+void free(Trie*& trie)
+{
+    if (trie == nullptr)
+        return;
+
+    if (hasChildren(trie))
     {
-        auto insert = currentRow[i - 1] + 1;
-        auto del = row[i] + 1;
-
-        auto replace = 0;
-        if (word[i - 1] != c)
-            replace = row[i - 1] + 1;
-        else
-            replace = row[i - 1];
-
-        currentRow.push_back(std::min({ insert, del, replace }));
-
-        if (currentRow.back() <= dist && t->endOfWord) // fix
-            print(t->word, currentRow.back(), t->freq);
-
-        if (*std::min_element(currentRow.begin(), currentRow.end()) <= dist)
-        {
-            for (auto& elt: t->children)
-                searchRecursive(elt.second, elt.first, word, currentRow, dist);
-        }
-
+        for (auto &c : trie->children)
+            free(c.second);
     }
+
+    delete trie;
+    trie = nullptr;
 }
 
 void search(Trie*& t, std::string& word, int dist)
 {
-    std::cout << word << std::endl;
-    std::cout << dist << std::endl;
+    auto children = hasChildren(t);
 
-    auto vect = std::vector<int>();
+    if (t->freq != 0)
+    {
+        auto d = damerau_levenshtein(word, t->word);
+        //std::cout << word << ", " << t->word << ": " << d << std::endl;
 
-    for (int i = 0; i < word.size() + 1; ++i)
-        vect.push_back(i);
+        if (d <= dist)
+            print(t->word, d, t->freq);
+
+        if (children)
+            for (auto &elt: t->children)
+                search(elt.second, word, dist);
+    }
+    else if (children)
+    {
+        for (auto &elt: t->children)
+            search(elt.second, word, dist);
+    }
+
+}
+
+void load_and_search(char *dict, std::string word, int dist)
+{
+    std::ifstream fstream(dict);
+    Trie* root = nullptr;
+    std::string line;
+
+    std::ofstream fout("tmp.tmn", std::ios_base::trunc | std::ios_base::out);
 
     std::cout << '[';
 
-    for (auto& elt: t->children)
-        searchRecursive(elt.second, elt.first, word, vect, dist);
-
-    std::cout << ']';
-}
-
-int handle_pipe(char *dict)
-{
-    auto trie = deserialize(dict);
-
-    char *buffer = NULL;
-    size_t l = 0;
-    ssize_t t = getline(&buffer, &l, stdin);
-
-    if (buffer[t - 1] == '\n')
+    while (getline(fstream, line))
     {
-        buffer[t - 1] = '\0';
-        --t;
+        if (line == "=")
+        {
+            fout.close();
+            root = load("tmp.tmn");
+            search(root, word, dist);
+            free(root);
+            root = nullptr;
+
+            fout = std::ofstream("tmp.tmn");
+        }
+        else
+            fout << line << '\n';
     }
 
-    std::istringstream iss(buffer);
-    std::vector<std::string> words{
-            std::istream_iterator<std::string>{iss},
-            std::istream_iterator<std::string>{}
-    };
+    std::cout << ']' << std::endl;
+    std::remove("tmp.tmn");
+}
 
-    search(trie, words[2], std::stoi(words[1]));
+int handle_cmd(char *dict)
+{
+    std::string buffer;
 
-    free(buffer);
+    while(std::getline(std::cin, buffer))
+    {
+        std::istringstream iss(buffer);
+        std::vector<std::string> words{
+                std::istream_iterator<std::string>{iss},
+                std::istream_iterator<std::string>{}
+        };
+
+        load_and_search(dict, words[2], std::stoi(words[1]));
+    }
 
     return 0;
 }
 
 int main(int argc, char *argv[])
 {
-    return handle_pipe(argv[1]);
+    /*std::string w1 = "bonjour";
+    std::string w2 = "bojnour";
+    std::string w3 = "alseimer";
+    std::string w4 = "alzheimer";
+    std::string w5 = "bonjjour";
+    std::string w6 = "test";
+    std::string w7 = "test";
+
+    std::cout << damerau_levenshtein(w2, w1) << std::endl;
+    std::cout << damerau_levenshtein(w3, w4) << std::endl;
+    std::cout << damerau_levenshtein(w5, w1) << std::endl;
+    std::cout << damerau_levenshtein(w6, w7) << std::endl;
+
+    return 0;*/
+
+    return handle_cmd(argv[1]);
 }

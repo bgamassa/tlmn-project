@@ -7,3 +7,8 @@
 #include <TextMiningCompiler.hh>
 #include <stdio.h>
 #include <unistd.h>
+#include <sys/resource.h>
+#include <sys/time.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
