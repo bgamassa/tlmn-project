@@ -33,49 +33,14 @@ int damerau_levenshtein(std::string& w1, std::string& w2)
     return d[w1.size()][w2.size()] + diff;
 }
 
-Trie* load(std::string filename)
-{
-    Trie *t;
-    std::ifstream ifs(filename);
-    boost::archive::text_iarchive ia (ifs);
-    ia >> t;
-
-    return t;
-}
-
 void print(std::string word, int distance, int freq)
 {
     std::cout << '{' << "\"word\":" << word << ",\"freq\":" << freq << ",\"distance\":" << distance << '}';
 }
 
-bool hasChildren(Trie const* current)
-{
-    for (auto it : current->children)
-        if (it.second != nullptr)
-            return true;
-
-    return false;
-}
-
-
-void free(Trie*& trie)
-{
-    if (trie == nullptr)
-        return;
-
-    if (hasChildren(trie))
-    {
-        for (auto &c : trie->children)
-            free(c.second);
-    }
-
-    delete trie;
-    trie = nullptr;
-}
-
 void search(Trie*& t, std::string& word, int dist)
 {
-    auto children = hasChildren(t);
+    auto children = t->hasChildren();
 
     if (t->freq != 0)
     {
@@ -112,9 +77,9 @@ void load_and_search(char *dict, std::string word, int dist)
         if (line == "=")
         {
             fout.close();
-            root = load("tmp.tmn");
+            root = Trie::load("tmp.tmn");
             search(root, word, dist);
-            free(root);
+            root->free();
             root = nullptr;
 
             fout = std::ofstream("tmp.tmn");

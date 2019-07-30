@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.5)
 project(TLMN CXX)
 set(SRC1 src/TextMiningCompiler.cc
+        src/Trie.cc
         )
 set (SRC2 src/TextMiningApp.cc
+        src/Trie.cc
         )
 find_package(Boost 1.55 REQUIRED COMPONENTS serialization)
 include_directories(includes ${Boost_INCLUDE_DIR})

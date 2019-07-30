@@ -2,14 +2,10 @@
 #include <fstream>
 #include <string>
 #include <iostream>
-#include <vector>
-#include <iostream>
 #include <sstream>
 #include <iterator>
 #include <map>
 #include <cstdio>
-#include <set>
-#include <vector>
 #include <algorithm>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
@@ -29,12 +25,12 @@ private:
         ar & children;
     }
 
+public:
     bool endOfWord;
     std::string word;
     int freq;
     std::unordered_map<char, Trie*> children;
 
-public:
     Trie()
     {
         endOfWord = false;
@@ -49,9 +45,9 @@ public:
 
     }
 
-    void insert(std::string& word, int &freq);
     bool hasChildren();
     void save(std::string& filename);
+    void free();
+    static void insert(Trie*& root, std::string& word, int &freq);
     static Trie* load(std::string filename);
-    static void free();
 };

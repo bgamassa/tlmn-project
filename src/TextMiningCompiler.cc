@@ -28,8 +28,8 @@ std::set<std::string> build_trie(std::string filename)
             if (root != nullptr)
             {
                 auto fname = std::string(1, cur).append(".tmn");
-                save(root, fname);
-                free(root);
+                root->save(fname);
+                root->free();
                 root = nullptr;
             }
 
@@ -37,30 +37,30 @@ std::set<std::string> build_trie(std::string filename)
             letters.insert(c);
             auto fname = std::string(1, cur).append(".tmn");
             dicts.insert(fname);
-            insert(root, words[0], i);
+            Trie::insert(root, words[0], i);
         }
         else if (c != cur)
         {
             if (root != nullptr)
             {
                 auto fname = std::string(1, cur).append(".tmn");
-                save(root, fname);
-                free(root);
+                root->save(fname);
+                root->free();
                 root = nullptr;
             }
 
             auto fname = std::string(1, c).append(".tmn");
-            root = load(fname);
+            root = Trie::load(fname);
             cur = c;
-            insert(root, words[0], i);
+            Trie::insert(root, words[0], i);
         }
         else
-            insert(root, words[0], i);
+            Trie::insert(root, words[0], i);
     }
 
     auto fname = std::string(1, cur).append(".tmn");
-    save(root, fname);
-    free(root);
+    root->save(fname);
+    root->free();
     root = nullptr;
 
     return dicts;

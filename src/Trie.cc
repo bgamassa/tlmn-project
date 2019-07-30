@@ -1,10 +1,13 @@
 #include <Trie.hh>
 
-void Trie::insert(std::string& word, int &freq)
+void Trie::insert(Trie*& root, std::string& word, int &freq)
 {
-    Trie* current = this;
+    if (root == nullptr)
+        root = new Trie("");
 
-    for(std::string::size_type i = 0; i < word.size(); ++i) {
+    Trie* current = root;
+
+    for (std::string::size_type i = 0; i < word.size(); ++i) {
 
         char c = word[i];
 
