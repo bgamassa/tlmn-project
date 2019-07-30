@@ -42,7 +42,6 @@ public:
         endOfWord = false;
         freq = 0;
         word = word_;
-
     }
 
     bool hasChildren();

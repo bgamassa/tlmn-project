@@ -1,5 +1,21 @@
 #include <TextMiningApp.hh>
 
+typedef std::tuple<std::string&, int&, int&> elt;
+auto res = std::vector<element>();
+
+bool elt_cmp (const element &lhs, const element &rhs){
+    // return lhs.distance < rhs.distance && lhs.freq > rhs.freq && lhs.word < rhs.word;
+
+    if(lhs.distance < rhs.distance) return true;
+    if(lhs.distance > rhs.distance) return false;
+
+    if(lhs.freq > rhs.freq) return true;
+    if(lhs.freq < rhs.freq) return false;
+
+    if(lhs.word < rhs.word) return true;
+    return false;
+}
+
 int damerau_levenshtein(std::string& w1, std::string& w2)
 {
     int sub_or_exact = 0;
@@ -33,9 +49,29 @@ int damerau_levenshtein(std::string& w1, std::string& w2)
     return d[w1.size()][w2.size()] + diff;
 }
 
-void print(std::string word, int distance, int freq)
+element init_element(std::string word, int freq, int distance)
 {
-    std::cout << '{' << "\"word\":" << word << ",\"freq\":" << freq << ",\"distance\":" << distance << '}';
+    element elt;
+    elt.word = word;
+    elt.freq = freq;
+    elt.distance = distance;
+
+    return elt;
+}
+
+void print_res()
+{
+    std::cout << '[';
+
+    for (auto it = res.begin(); it != res.end(); ++it) {
+        std::cout << '{' << "\"word\":" << it->word << ",\"freq\":" << it->freq << ",\"distance\":"
+                  << it->distance << '}';
+
+        if (it->word != res.back().word)
+            std::cout << ",";
+    }
+
+    std::cout << ']' << std::endl;
 }
 
 void search(Trie*& t, std::string& word, int dist)
@@ -45,10 +81,11 @@ void search(Trie*& t, std::string& word, int dist)
     if (t->freq != 0)
     {
         auto d = damerau_levenshtein(word, t->word);
-        //std::cout << word << ", " << t->word << ": " << d << std::endl;
 
-        if (d <= dist)
-            print(t->word, d, t->freq);
+        if (d <= dist) {
+            //std::cout << t->word << std::endl;
+            res.push_back(init_element(t->word, t->freq, d));
+        }
 
         if (children)
             for (auto &elt: t->children)
@@ -59,7 +96,6 @@ void search(Trie*& t, std::string& word, int dist)
         for (auto &elt: t->children)
             search(elt.second, word, dist);
     }
-
 }
 
 void load_and_search(char *dict, std::string word, int dist)
@@ -69,8 +105,6 @@ void load_and_search(char *dict, std::string word, int dist)
     std::string line;
 
     std::ofstream fout("tmp.tmn", std::ios_base::trunc | std::ios_base::out);
-
-    std::cout << '[';
 
     while (getline(fstream, line))
     {
@@ -87,9 +121,11 @@ void load_and_search(char *dict, std::string word, int dist)
         else
             fout << line << '\n';
     }
-
-    std::cout << ']' << std::endl;
     std::remove("tmp.tmn");
+
+    std::sort(res.begin(), res.end(), elt_cmp);
+    print_res();
+    res.clear();
 }
 
 int handle_cmd(char *dict)

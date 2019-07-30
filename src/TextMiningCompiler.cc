@@ -74,7 +74,7 @@ int process_file(std::string filename, std::string dest)
         return 0;
 
     auto n = build_trie(filename);
-    std::ofstream fout(dest, std::ios_base::app | std::ios_base::trunc);
+    std::ofstream fout(dest);
 
     for (auto i = n.begin(); i != n.end(); ++i)
     {

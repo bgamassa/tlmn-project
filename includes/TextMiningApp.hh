@@ -13,6 +13,13 @@
 #include <string.h>
 #include <TextMiningCompiler.hh>
 
+struct element
+{
+    std::string word;
+    int freq;
+    int distance;
+};
+
 int damerau_levenshtein(std::string& w1, std::string& w2);
 void search(Trie*& t, std::string& word, int dist);
 void load_and_search(char *dict, std::string word, int dist);
