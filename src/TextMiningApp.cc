@@ -149,9 +149,6 @@ int handle_cmd(char *dict)
             std::istream_iterator<std::string>{iss},
             std::istream_iterator<std::string>{}};
 
-        if (words[0] == "quit")
-            break;
-
         load_and_search(dict, words[2], std::stoi(words[1]));
     }
 
@@ -160,5 +157,11 @@ int handle_cmd(char *dict)
 
 int main(int argc, char *argv[])
 {
+    if (argc == 1)
+    {
+        std::cerr << "Usage: ./TextMiningApp /path/to/compiled/dict.bin\n";
+        return 134;
+    }
+
     return handle_cmd(argv[1]);
 }

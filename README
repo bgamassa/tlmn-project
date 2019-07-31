@@ -1,4 +1,5 @@
 AUTHORS
+
       Binta Gamassa
 
 NAME
@@ -15,7 +16,7 @@ SYNOPSIS
         "echo appro 1 test" | ./TextMiningApp [saved_dict]	
 
 DOC
-      
+
       mkdir build
       cd build
       cmake ..
@@ -34,4 +35,29 @@ DESCRIPTION
       This project is a C++ implementation of a spell checker using CMake as build system.
       In the first step, the program builds a compiled dictionnary using a text file provided
       by the user. Then, the program is able to output a list of words that is at a defined
-      distance of a word both given in input by the user. 
+      distance of a word both given in input by the user, using a Damerau-Levenshtein function.
+
+QUESTIONS
+
+ 1.	Décrivez les choix de design de votre programme
+-> Pour le TextMiningCompiler, j'ai décidé de créer et d'utliser une classe Trie pour construire mon dictionnaire compilé. J'ai au premier abord effectué une implémentation simple du Trie, mais celle-ci consommait trop de RAM. De ce fait, mon programme construit à présent un Trie par lettre et libère ensuite la mémoire. A la fin je fusionne tous mes Trie dans un seul fichier qui est celui spécifié en argument par l'utilisateur.
+-> Pour la TextMiningApp, pour chaque commande, le programme lit le dictionnaire compilé et charge par petites parties le Trie pour calculer des distances avec les mots. C'est malheureusement la raison de la lenteur du programme, mais charger tout le trie d'un seul coup consommait trop de RAM donc j'ai préféré privilégier la consommation de RAM à la vitesse, car je n'arrivais pas à concilier les deux avec mon implémentation actuelle. Lorsque le programme trouve un mot ayant une distance inférieure ou égale à celle spécifiée en argument, il stocke le mot, sa fréquence et sa distance dans un vecteur. A la fin de la recherche, tout le contenu du vecteur est affiché sur stdout sous forme de JSON.
+
+ 2.	Listez l’ensemble des tests effectués sur votre programme (en plus des units tests)
+-> J'ai utilisé valgrind pour vérifier si la mémoire est correctement utilisée par mes deux programmes, et s'il n'y a pas de fuites mémoires, et j'ai également utilisé Htop pour vérifier la consommation en RAM de mes deux programmes.
+
+ 3.	Avez-vous détecté des cas où la correction par distance ne fonctionnait pas (même avec une distance élevée) ?
+-> /
+
+ 4.	Quelle est la structure de données que vous avez implémentée dans votre projet, pourquoi ?
+-> J'ai choisi d'utiliser le Trie car c'est la structure que je comprenais le mieux et qui me paraissait le plus simple à implémenter.
+
+ 5.	Proposez un réglage automatique de la distance pour un programme qui prend juste une chaîne de caractères en entrée, donner le processus d’évaluation ainsi que les résultats
+-> Généralement les personnes commettent des erreurs qui peuvent être réglées par une opération de transposition, donc pour un mot donné, on pourrait par exemple fournir la liste de tous les mots à une distance de Damerau-Levenshtein de 2 maximum. Tout comme ce projet, on pourrait ordonner les mots par distance et fréquence, et proposer par exemple les 5 premiers de la listes. Pour évaluer le réglage, on pourrait mesurer sa vitesse et fixer une limite de temps, p
+
+ 6.	Comment comptez vous améliorer les performances de votre programme
+-> Je pourrais peut-être utiliser des threads en C++ pour optimiser la recherche sur plusieurs Trie à la fois.
+
+ 7.	Que manque-t-il à votre correcteur orthographique pour qu’il soit à l’état de l’art ?
+-> Mon correcteur est trop lent, alors il faudrait améliorer la vitesse d'éxécution pour qu'il soit à l'état de l'art.
+ 
