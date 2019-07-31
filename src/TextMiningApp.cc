@@ -2,23 +2,18 @@
 
 /*
  ** @file TextMiningApp.cc
- ** @brief File containing functions to search for words according to a give distance
+ ** @brief File containing functions to search for words according to a given distance
  ** @authors Binta Gamassa
  ** @version 1.0
  ** @date 30/07/19
  */
 
 typedef std::tuple<std::string &, int &, int &> elt;
-auto res = std::vector<element>();
+auto res = std::vector<Element>();
 
-/** My function doing something...
-    @param filename first parameter
-    @return value return value
-*/
-
-element init_element(std::string word, int freq, int distance)
+Element init_element(std::string word, int freq, int distance)
 {
-    element elt;
+    Element elt;
 
     elt.word = word;
     elt.freq = freq;
@@ -27,12 +22,7 @@ element init_element(std::string word, int freq, int distance)
     return elt;
 }
 
-/** My function doing something...
-    @param filename first parameter
-    @return value return value
-*/
-
-bool elt_cmp(const element &lhs, const element &rhs)
+bool elt_cmp(const Element &lhs, const Element &rhs)
 {
     if (lhs.distance < rhs.distance)
         return true;
@@ -49,10 +39,21 @@ bool elt_cmp(const element &lhs, const element &rhs)
     return false;
 }
 
-/** My function doing something...
-    @param filename first parameter
-    @return value return value
-*/
+void print_res()
+{
+    std::cout << '[';
+
+    for (auto it = res.begin(); it != res.end(); ++it)
+    {
+        std::cout << '{' << "\"word\":\"" << it->word << "\",\"freq\":" << it->freq << ",\"distance\":"
+                  << it->distance << '}';
+
+        if (it->word != res.back().word)
+            std::cout << ",";
+    }
+
+    std::cout << ']' << std::endl;
+}
 
 int damerau_levenshtein(std::string &w1, std::string &w2)
 {
@@ -85,32 +86,6 @@ int damerau_levenshtein(std::string &w1, std::string &w2)
     return d[w1.size()][w2.size()];
 }
 
-/** My function doing something...
-    @param filename first parameter
-    @return value return value
-*/
-
-void print_res()
-{
-    std::cout << '[';
-
-    for (auto it = res.begin(); it != res.end(); ++it)
-    {
-        std::cout << '{' << "\"word\":\"" << it->word << "\",\"freq\":" << it->freq << ",\"distance\":"
-                  << it->distance << '}';
-
-        if (it->word != res.back().word)
-            std::cout << ",";
-    }
-
-    std::cout << ']' << std::endl;
-}
-
-/** My function doing something...
-    @param filename first parameter
-    @return value return value
-*/
-
 void search(Trie *&t, std::string &word, int dist)
 {
     auto children = t->hasChildren();
@@ -132,11 +107,6 @@ void search(Trie *&t, std::string &word, int dist)
             search(elt.second, word, dist);
     }
 }
-
-/** My function doing something...
-    @param filename first parameter
-    @return value return value
-*/
 
 void load_and_search(char *dict, std::string word, int dist)
 {
@@ -168,11 +138,6 @@ void load_and_search(char *dict, std::string word, int dist)
     res.clear();
 }
 
-/** My function doing something...
-    @param filename first parameter
-    @return value return value
-*/
-
 int handle_cmd(char *dict)
 {
     std::string buffer;
@@ -183,6 +148,9 @@ int handle_cmd(char *dict)
         std::vector<std::string> words{
             std::istream_iterator<std::string>{iss},
             std::istream_iterator<std::string>{}};
+
+        if (words[0] == "quit")
+            break;
 
         load_and_search(dict, words[2], std::stoi(words[1]));
     }

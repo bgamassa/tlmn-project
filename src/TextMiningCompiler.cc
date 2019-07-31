@@ -8,11 +8,6 @@
  ** @date 30/07/19
  */
 
-/** My function doing something...
-    @param filename first parameter
-    @return value return value
-*/
-
 std::set<std::string> build_trie(std::string filename)
 {
     auto dicts = std::set<std::string>();
@@ -78,11 +73,6 @@ std::set<std::string> build_trie(std::string filename)
 
     return dicts;
 }
-
-/** My function doing something...
-    @param filename first parameter
-    @return value return value
-*/
 
 int process_file(std::string filename, std::string dest)
 {

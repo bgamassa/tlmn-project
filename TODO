@@ -1,4 +1,4 @@
-[ ] Memory leaks
+[X] Memory leaks
 [X] levensein function
 [X] create class to store pair and function to sort them
 [ ] speed

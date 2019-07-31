@@ -5,3 +5,4 @@ cmake-build-debug/*
 tests/my_output.txt
 tests/ref.txt
 doc/html/*
+doc/latex/*
