@@ -116,6 +116,7 @@ void load_and_search(char *dict, std::string word, int dist)
 
     std::ofstream fout("tmp.tmn", std::ios_base::trunc | std::ios_base::out);
 
+    // read file, get trie by parts, load it, search words, then free trie
     while (getline(fstream, line))
     {
         if (line == "=")
@@ -149,6 +150,8 @@ int handle_cmd(char *dict)
 
     while (std::getline(std::cin, buffer))
     {
+        // transform line into a vector of string
+
         std::istringstream iss(buffer);
         std::vector<std::string> words{
             std::istream_iterator<std::string>{iss},

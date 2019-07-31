@@ -1,7 +1,2 @@
 approx 2 test
-approx 4 caca
 approx 2 binta
-approx 0 alexandre
-approx 6 toto
-approx 10 piom
-approx 11 zertio

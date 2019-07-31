@@ -40,7 +40,7 @@ DESCRIPTION
 QUESTIONS
 
  1.	Décrivez les choix de design de votre programme
--> Pour le TextMiningCompiler, j'ai décidé de créer et d'utliser une classe Trie pour construire mon dictionnaire compilé. J'ai au premier abord effectué une implémentation simple du Trie, mais celle-ci consommait trop de RAM. De ce fait, mon programme construit à présent un Trie par lettre et libère ensuite la mémoire. A la fin je fusionne tous mes Trie dans un seul fichier qui est celui spécifié en argument par l'utilisateur.
+-> Pour le TextMiningCompiler, j'ai décidé de créer et d'utliser une classe Trie pour construire mon dictionnaire compilé. J'ai au premier abord effectué une implémentation simple du Trie, mais celle-ci consommait trop de RAM. De ce fait, mon programme construit à présent un Trie par lettre et libère ensuite la mémoire. A la fin je fusionne tous mes Trie dans un seul fichier qui est celui spécifié en argument par l'utilisateur, en utilisant Boost.
 -> Pour la TextMiningApp, pour chaque commande, le programme lit le dictionnaire compilé et charge par petites parties le Trie pour calculer des distances avec les mots. C'est malheureusement la raison de la lenteur du programme, mais charger tout le trie d'un seul coup consommait trop de RAM donc j'ai préféré privilégier la consommation de RAM à la vitesse, car je n'arrivais pas à concilier les deux avec mon implémentation actuelle. Lorsque le programme trouve un mot ayant une distance inférieure ou égale à celle spécifiée en argument, il stocke le mot, sa fréquence et sa distance dans un vecteur. A la fin de la recherche, tout le contenu du vecteur est affiché sur stdout sous forme de JSON.
 
  2.	Listez l’ensemble des tests effectués sur votre programme (en plus des units tests)

@@ -13,9 +13,11 @@ std::set<std::string> build_trie(std::string filename)
     auto dicts = std::set<std::string>();
 
     std::ifstream fstream(filename);
+    // init root
     Trie* root = new Trie("");
     std::string line;
 
+    // history of all the letters
     auto letters = std::set<char>();
 
     char cur = -1;
@@ -30,9 +32,9 @@ std::set<std::string> build_trie(std::string filename)
         char c = words[0][0];
         auto i = std::stoi(words[1]);
 
+        // case when the programs sees a letter for the first time
         if (letters.find(c) == letters.end())
         {
-            std::cout << c << ".tmn" << std::endl;
             if (root != nullptr)
             {
                 auto fname = std::string(1, cur).append(".tmn");
@@ -84,13 +86,13 @@ int process_file(std::string filename, std::string dest)
     auto n = build_trie(filename);
     std::ofstream fout(dest);
 
+    // gets all the mini tries and writes them all in a single file
     for (auto i = n.begin(); i != n.end(); ++i)
     {
         std::ifstream fin(*i);
         std::string line;
         while( std::getline( fin, line ) ) fout << line << '\n';
         fout << "=" << '\n';
-        std::cout << "deleting " << *i << std::endl;
         std::remove(i->c_str());
     }
 
