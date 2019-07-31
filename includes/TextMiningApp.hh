@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <sys/resource.h>
 #include <sys/time.h>
+#include <thread>
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,19 +28,19 @@ struct Element
     int distance; /*!> variable that indicates the distance between a given word and the word in struct */
 };
 
-/*!
-*  \brief This method allow us to know whether a trie has children
-*
-*  \return true if trie has children,
-*  false else
+/**
+**  \brief This method allow us to know whether a trie has children
+**
+**  \return true if trie has children,
+**  false else
 */
 Element init_element(std::string word, int freq, int distance);
 
-/*!
-*  \brief This method defines conditions to compare whether an element is smaller then an other
-*
-*  \return true if rhs matches conditions,
-*  false else
+/**
+**  \brief This method defines conditions to compare whether an element is smaller then an other
+**
+**  \return true if rhs matches conditions,
+**  false else
 */
 bool elt_cmp(const Element &lhs, const Element &rhs);
 

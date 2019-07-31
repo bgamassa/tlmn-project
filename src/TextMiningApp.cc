@@ -138,6 +138,11 @@ void load_and_search(char *dict, std::string word, int dist)
     res.clear();
 }
 
+/*!
+  \brief This method allow us to know whether a trie has children
+  \param char *dict: the name of the file from which to load the trie
+  \return int
+*/
 int handle_cmd(char *dict)
 {
     std::string buffer;
@@ -148,6 +153,9 @@ int handle_cmd(char *dict)
         std::vector<std::string> words{
             std::istream_iterator<std::string>{iss},
             std::istream_iterator<std::string>{}};
+
+        if (words[0] != "approx")
+            continue;
 
         load_and_search(dict, words[2], std::stoi(words[1]));
     }

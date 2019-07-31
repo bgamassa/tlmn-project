@@ -86,12 +86,12 @@ public:
      */
     void free();
 
-    /*!
-     *  \brief This method allow us to inser a word in a trie
-     *  \param Trie*& root: the trie in which to insert the word
-     *  \param std::string& word: the word to insert in trie
-     *  \param int &freq: the frequency of apparition of the word
-     *  \return void
+    /**
+     **  \brief This method allow us to inser a word in a trie
+     **  \param Trie*& root: the trie in which to insert the word
+     **  \param std::string& word: the word to insert in trie
+     **  \param int &freq: the frequency of apparition of the word
+     **  \return void
      */
     static void insert(Trie*& root, std::string& word, int &freq);
 
