@@ -24,7 +24,7 @@ DOC
       xdg-open ../doc/html/index.html or firefox ../doc/html/index.html
 
 TEST SUITE
-      
+      (add commands to the commands.txt file)      
       mkdir build
       cd build
       cmake ..
